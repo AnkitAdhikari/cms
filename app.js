@@ -21,6 +21,18 @@ app.get("/addBlog", (req, res) => {
   res.render("addBlog.ejs");
 });
 
+app.post("/createBlog", async (req, res) => {
+  const { title, subtitle, description } = req.body;
+  console.log(title, subtitle, description);
+  await blogs.create({
+    title,
+    subtitle,
+    description,
+  });
+  console.log(req.body);
+  res.redirect("/");
+});
+
 app.get('/single/:id',async(req,res)=>{
   const {id } = req.params;
 
@@ -43,17 +55,26 @@ app.get('/delete/:id',async(req,res)=>{
   res.redirect('/');
 })
 
-app.post("/createBlog", async (req, res) => {
-  const { title, subtitle, description } = req.body;
-  console.log(title, subtitle, description);
-  await blogs.create({
-    title,
-    subtitle,
-    description,
-  });
-  console.log(req.body);
-  res.redirect("/");
-});
+app.get('/edit/:id',async(req,res)=>{
+  const id = req.params.id;
+  const allBlogs = await blogs.findAll({
+    where:{
+      id,
+    }
+  })
+  res.render('editBlog.ejs',{id,allBlogs});
+})
+
+app.post('/editBlog/:id',async(req,res)=>{
+  const id = req.params.id;
+  await blogs.update(req.body,{
+    where:{
+      id:id,
+    }
+  })
+  res.redirect(`/single/${id}`)
+})
+
 
 app.listen(8000, () => {
   console.log("server running at port 8000");

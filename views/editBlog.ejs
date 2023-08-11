@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit sth</title>
+</head>
+<body>
+  <h2>Edit blog <%- id %></h2>
+  <%- include('./partials/head.ejs') %>
+    <form action="/editBlog/<%- id %>" method="post">
+      <h1>Title:</h1>
+      <input type="text" name="title" placeholder="Enter the title" required value="<%- allBlogs[0].title %>" />
+
+      <h2>Subtitle:</h2>
+      <input
+        type="text"
+        name="subtitle"
+        placeholder="Enter the subtitle"
+        required
+        value="<%- allBlogs[0].subtitle %>"
+      />
+
+      <h3>Description:</h3>
+      <textarea
+        name="description"
+        placeholder="Enter the description"
+        rows="4"
+        required
+      ><%- allBlogs[0].description %></textarea>
+
+      <br />
+      <input type="submit" value="Submit" />
+    </form>
+</body>
+</html>
