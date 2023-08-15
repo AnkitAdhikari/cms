@@ -1,19 +1,18 @@
 const express = require("express");
 const app = express();
 const { blogs } = require("./model/index");
-const path = require('path');
+const path = require("path");
 
 require("./model/index");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname,'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
 app.set("viewengine", "ejs");
 
 app.get("/", async (req, res) => {
   const allBlogs = await blogs.findAll();
-  console.log(allBlogs);
   res.render("home.ejs", { blogs: allBlogs });
 });
 
@@ -23,21 +22,19 @@ app.get("/addBlog", (req, res) => {
 
 app.post("/createBlog", async (req, res) => {
   const { title, subtitle, description } = req.body;
-  console.log(title, subtitle, description);
   await blogs.create({
     title,
     subtitle,
     description,
   });
-  console.log(req.body);
   res.redirect("/");
 });
 
-app.get('/single/:id',async(req,res)=>{
-  const {id } = req.params;
+app.get("/single/:id", async (req, res) => {
+  const { id } = req.params;
 
   const blog = await blogs.findByPk(id);
-  const {title,subtitle,description} = blog;
+  const { title, subtitle, description } = blog;
   // console.log(title,subtitle,description)
   // another way of retriving data
   // const blog = awiat blogs.findAll({
@@ -46,35 +43,34 @@ app.get('/single/:id',async(req,res)=>{
   //   },
   // })
 
-  res.render("singleBlog.ejs",{title,subtitle,description,id});
-})
+  res.render("singleBlog.ejs", { title, subtitle, description, id });
+});
 
-app.get('/delete/:id',async(req,res)=>{
+app.get("/delete/:id", async (req, res) => {
   const id = req.params.id;
   await blogs.destroy({ where: { id } });
-  res.redirect('/');
-})
+  res.redirect("/");
+});
 
-app.get('/edit/:id',async(req,res)=>{
+app.get("/edit/:id", async (req, res) => {
   const id = req.params.id;
   const allBlogs = await blogs.findAll({
-    where:{
+    where: {
       id,
-    }
-  })
-  res.render('editBlog.ejs',{id,allBlogs});
-})
+    },
+  });
+  res.render("editBlog.ejs", { id, allBlogs });
+});
 
-app.post('/editBlog/:id',async(req,res)=>{
+app.post("/editBlog/:id", async (req, res) => {
   const id = req.params.id;
-  await blogs.update(req.body,{
-    where:{
-      id:id,
-    }
-  })
-  res.redirect(`/single/${id}`)
-})
-
+  await blogs.update(req.body, {
+    where: {
+      id: id,
+    },
+  });
+  res.redirect(`/single/${id}`);
+});
 
 app.listen(8000, () => {
   console.log("server running at port 8000");
